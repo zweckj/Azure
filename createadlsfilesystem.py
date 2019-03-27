@@ -1,22 +1,25 @@
 import adal
 import requests
-import argparse
 
-# get auth token from AAD
 authentication_endpoint = 'https://login.microsoftonline.com/'
 resource  = 'https://storage.azure.com/'
 
 
 # Make sure that the application is storage blob data contributor on the storage account
 
+# application settings
 clientid = "CLIENT_ID"
 clientsecret = "CLIENT SECRET"
 tenantid = "TENANT ID"
 
+# name of storage account
 storageaccountname = "NAME OF STORAGE"
+# name of file system to create
 filesystem = "FILE SYSTEM NAME"
+# name of directory to create
 dirname = "DIRECTORY NAME"
 
+# get auth token from AAD
 context = adal.AuthenticationContext(authentication_endpoint + tenantid)
 token_response = context.acquire_token_with_client_credentials(
     resource=resource,
@@ -25,15 +28,11 @@ token_response = context.acquire_token_with_client_credentials(
 )
 access_token = token_response.get('accessToken')
 
-# issue request to API
+# create API endpoint url
 adlsFQDN = f'{storageaccountname}.dfs.core.windows.net'
 
-recursive = "true"
-resource = "filesystem"
-
-
+# create authorization header
 headers = {"Authorization": 'Bearer ' + access_token}
-
 
 # create file system
 apiLink = f'https://{adlsFQDN}/{filesystem}?resource=filesystem'
